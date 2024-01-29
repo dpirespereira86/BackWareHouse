@@ -4,21 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Inicial">
+    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Ajuste Fornecedor/Pedido">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/company/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/company/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/company/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/company/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inicio.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/empresa/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +100,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706527624511</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Ajuste Fornecedor/Pedido">
+      <option name="closed" value="true" />
+      <created>1706537569215</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1706537569215</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -122,7 +124,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Inicial" />
-    <option name="LAST_COMMIT_MESSAGE" value="Inicial" />
+    <MESSAGE value="Ajuste Fornecedor/Pedido" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ajuste Fornecedor/Pedido" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -18,7 +18,6 @@ class ItemPedidoCompraAdmin(admin.ModelAdmin):
     list_display = ('id',
     'pedido_compra',
     'codigo',
-    'codigo_interno',
     'descricao',
     'quantidade',
     'prazo_de_entrega',

@@ -2,20 +2,30 @@ from rest_framework import serializers
 from .models import (Solicitacao,PedidoCompra,ItemPedidoCompra,ItemSolicitacao,Cotacao,ItemCotacao,ItemAvulso,
                      ItemAvulsoPedido)
 
-
+######################################### Solicitações #################################################################
 class ItemSolicitacaoSerializers(serializers.ModelSerializer):
     class Meta:
         model = ItemSolicitacao
         fields=('id','solicitacao','codigo','descricao','quantidade',)
 
 
-class ItemPedidoCompraSerializers(serializers.ModelSerializer):
+
+class ItemAvulsoSerializers(serializers.ModelSerializer):
+
     class Meta:
-        model = ItemPedidoCompra
-        fields=('id','solicitacao','codigo','codigo_interno','descricao','quantidade','empresa',)
+        model =ItemAvulso
+        fields=('id',
+                'descricao',
+                'quantidade',
+                'imagem',
+                'fornecedor_indicado',
+                'total',
+        )
+
 
 class SolictacaoSerializers(serializers.ModelSerializer):
-    itens = ItemSolicitacaoSerializers(many=True)
+    itens_solicitacoes = ItemSolicitacaoSerializers(many=True)
+    itens_avulso = ItemAvulsoSerializers(many=True)
     class Meta:
         model = Solicitacao
         fields = (
@@ -26,21 +36,29 @@ class SolictacaoSerializers(serializers.ModelSerializer):
         'empresa',
         'valor_estimado',
         'descricao',
-        'itens'
+        'itens_solicitacoes',
+        'itens_avulso'
         )
 
 
-        def create(self, validated_data):
-            itens_data = validated_data.pop('itens')
-            solicitacao = Solicitacao.objects.create(**validated_data)
-            for itens_data in itens_data:
-                ItemSolicitacao.objects.create(solicitacao=solicitacao, **itens_data)
-            return solicitacao
+    def create(self, validated_data):
+        itens_data = validated_data.pop('itens_solicitacoes')
+        itens_avulso = validated_data.pop('itens_avulso')
+        solicitacao = Solicitacao.objects.create(**validated_data)
+        for itens_data in itens_data:
+            ItemSolicitacao.objects.create(solicitacao=solicitacao, **itens_data)
+        for itens_avulso in itens_avulso:
+            ItemAvulso.objects.create(solicitacao=solicitacao, **itens_avulso)
+        return solicitacao
 
+########################################################################################################################
+
+################################################ Orçamento #############################################################
 class ItemCotacaoSerializers(serializers.ModelSerializer):
     class Meta:
         model = ItemCotacao
-        fields=( 'id',
+        fields=(
+        'id',
         'cotacao',
         'codigo',
         'codigo_interno',
@@ -50,16 +68,29 @@ class ItemCotacaoSerializers(serializers.ModelSerializer):
         'ultimo_preco',
         'valor_unit',
         'total',
-        'fornecedor', )
-
-
+        'fornecedor',
+        )
 
 class CotacaoSerializers(serializers.ModelSerializer):
     itens_cotacoes = ItemCotacaoSerializers(many=True)
     class Meta:
         model = Cotacao
-        fields=('id','operador','pedido_compra','fornecedor','contato','email_contato','observacao',
-    'empresa','valor_pedido','prazo_de_entrega','orcamento','justificativa','fechado','itens_cotacoes')
+        fields=( 'id',
+        'operador',
+        'pedido_compra',
+        'fornecedor',
+        'contato',
+        'email_contato',
+        'observacao',
+        'empresa',
+        'valor_pedido',
+        'prazo_de_entrega',
+        'orcamento',
+        'justificativa',
+        'fechado',
+        'fechado',
+        'itens_cotacoes'
+    )
 
     def create(self, validated_data):
         itens_cotacoes = validated_data.pop('itens_cotacoes')
@@ -69,24 +100,59 @@ class CotacaoSerializers(serializers.ModelSerializer):
         return cotacao
 
 
+########################################################################################################################
+
+######################################### Pedido de Compra #############################################################
+
+class ItemPedidoCompraSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ItemPedidoCompra
+        fields=('id','pedido_compra','codigo','descricao','quantidade',)
+
+class ItemAvulsoPedidoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ItemAvulsoPedido
+        fields=('id','pedido_compra','codigo','codigo_interno','descricao','quantidade',)
 class PedidoCompraSerializers(serializers.ModelSerializer):
-    itens = ItemPedidoCompraSerializers(many=True)
+    itens_pedido_compra = ItemPedidoCompraSerializers(many=True)
+    itens_pedido_avulso = ItemAvulsoPedidoSerializers(many=True)
     cotacoes = CotacaoSerializers(many=True)
     class Meta:
         model = PedidoCompra
         fields=('id','operador','solicitante','observacao','imagem','empresa','estimativa_valor','valor_pedido',
-    'prazo_de_entrega','itens','cotacoes' )
+    'prazo_de_entrega','itens_pedido_compra','itens_pedido_avulso','cotacoes' )
 
     def create(self, validated_data):
-        itens_data = validated_data.pop('itens')
-        cotacoes_data = validated_data.pop('cotacoes')
-        solicitacao = Solicitacao.objects.create(**validated_data)
-        for itens_data in itens_data:
-            ItemSolicitacao.objects.create(solicitacao=solicitacao, **itens_data)
-        for cotacoes_data in cotacoes_data:
-            cotacoes_data.objects.create(solicitacao=solicitacao, **cotacoes_data)
-        return solicitacao
 
+        itens_compra = validated_data.pop('itens_pedido_compra')
+        itens_avulso_compra = validated_data.pop('itens_pedido_avulso')
+        cotacoes_data = validated_data.pop('cotacoes')
+        pedido_compra = PedidoCompra.objects.create(**validated_data)
+
+
+        for itens_compra  in itens_compra :
+            ItemPedidoCompra.objects.create(pedido_compra=pedido_compra, **itens_compra )
+
+        for itens_avulso_compra  in itens_avulso_compra :
+            ItemAvulsoPedido.objects.create(pedido_compra=pedido_compra, **itens_avulso_compra )
+
+        for cotacoes_data in cotacoes_data:
+            Cotacao.objects.create(pedido_compra=pedido_compra, **cotacoes_data)
+
+        return pedido_compra
+
+########################################################################################################################
+
+####################################################### Aprovacao ######################################################
+class AprovacaoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = PedidoCompra
+        fields=(
+            'usuario',
+            'justificativa',
+            'aprovado',
+            'solicitacao',
+        )
 
 
 

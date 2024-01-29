@@ -15,7 +15,7 @@ class Base(models.Model):
 class Solicitacao(Base):
 
     id = models.AutoField(primary_key=True)
-    solicitante = models.ForeignKey(verbose_name='Solicitante', to=Usuario, related_name=
+    solicitante = models.ForeignKey(Usuario, related_name=
     'solictacoes_de_compra', on_delete=models.CASCADE)
     observacao = models.TextField(max_length=200, blank=True, null=True)
     urgencia = models.BooleanField(verbose_name='Urgente', default=False)
@@ -36,8 +36,9 @@ class Solicitacao(Base):
 
 class ItemSolicitacao(Base):
     id = models.AutoField(primary_key=True,unique=True)
-    solicitacao = models.ForeignKey(Solicitacao,related_name='itens_solicitacões',on_delete=models.CASCADE)
-    codigo=models.ForeignKey(Produto,related_name='itens_solicitações',on_delete=models.CASCADE)
+    solicitacao = models.ForeignKey(Solicitacao,related_name='itens_solicitacoes',on_delete=models.CASCADE,blank=True,
+                                    null=True)
+    codigo=models.ForeignKey(Produto,related_name='itens_solicitacoes',on_delete=models.CASCADE)
     descricao = models.CharField(max_length=100)
     quantidade = models.DecimalField(max_digits=5,decimal_places=2)
 
@@ -51,7 +52,7 @@ class ItemSolicitacao(Base):
 
 class ItemAvulso(Base):
     id = models.AutoField(primary_key=True, unique=True)
-    solicitacao = models.ForeignKey(Solicitacao, related_name="itens_Avulso",on_delete=models.CASCADE)
+    solicitacao = models.ForeignKey(Solicitacao, related_name="itens_avulso",on_delete=models.CASCADE)
     descricao = models.CharField(max_length=100)
     quantidade = models.DecimalField(max_digits=5, decimal_places=2)
     imagem = models.ImageField(default='', upload_to='imagem_solicitacao', null=True, blank=True)
@@ -111,16 +112,14 @@ class PedidoCompra(Base):
 class ItemPedidoCompra(Base):
 
     id = models.AutoField(primary_key=True,unique=True)
-    pedido_compra = models.ForeignKey(PedidoCompra,related_name='itens_pedido_compra',on_delete=models.CASCADE)
+    pedido_compra = models.ForeignKey(PedidoCompra,related_name='itens_pedido_compra',on_delete=models.CASCADE,
+                                      blank=True,null=True)
     codigo=models.ForeignKey(Produto,related_name='itens_pedido_compra',on_delete=models.CASCADE)
-    codigo_interno = models.CharField(max_length=30)
     descricao = models.CharField(max_length=100)
     quantidade = models.DecimalField(max_digits=5,decimal_places=2)
     prazo_de_entrega = models.IntegerField(default=0, null=True, blank=True)
     valor_unitario = models.DecimalField(max_digits=5,decimal_places=2)
     valor_total = models.DecimalField(max_digits=5, decimal_places=2)
-    criacao = models.DateTimeField(auto_now_add=True)
-    atualizacao = models.DateTimeField(auto_now_add=True)
     fornecedor = models.ForeignKey(Fornecedor, related_name='itens_pedido_compra', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -133,10 +132,9 @@ class ItemPedidoCompra(Base):
 
 class ItemAvulsoPedido(Base):
     id = models.AutoField(primary_key=True, unique=True)
-    solicitacao = models.ForeignKey(Solicitacao, related_name="itens_pedido_avulso",on_delete=models.CASCADE)
+    pedido_compra = models.ForeignKey(PedidoCompra, related_name="itens_pedido_avulso",on_delete=models.CASCADE)
     descricao = models.CharField(max_length=100)
     quantidade = models.DecimalField(max_digits=5, decimal_places=2)
-    empresa = models.CharField(max_length=30, null=False, blank=False)
     fornecedor_indicado = models.CharField(max_length=100,blank=True,null=True)
     total = models.DecimalField(max_digits=5, decimal_places=2,blank=True,null=True)
     def __str__(self):

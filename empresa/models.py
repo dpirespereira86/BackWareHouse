@@ -45,9 +45,6 @@ class Filial(Empresa):
         verbose_name_plural = "Filiais"
 
 
-
-
-
 class Fornecedor(models.Model):
 
     id = models.AutoField(primary_key=True)
