@@ -1,12 +1,13 @@
 import json
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError,_get_error_details
 import requests
 
 from Usuario.models import Usuario
-from .models import Empresa,Filial
+from .models import Empresa, Filial, Fornecedor
 from .serializers import EmpresaSerializers,FilialSerializers
 
 
@@ -80,3 +81,8 @@ class EmpresaCreateduserViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+class FornecedoresViewSet(viewsets.ModelViewSet):
+    queryset = Fornecedor.objects.all()
+    serializer_class = EmpresaSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [TokenAuthentication]

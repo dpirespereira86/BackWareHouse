@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 
-from .models import Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao
+from .models import Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao,ItemCotacao
 from .serializers import (SolictacaoSerializers,PedidoCompraSerializers,
                           ItemPedidoCompraSerializers,ItemSolicitacaoSerializers,CotacaoSerializers)
 
@@ -33,6 +33,12 @@ class ItemPedidoCompraViewSet(viewsets.ModelViewSet):
 
 class CotacaoViewSet(viewsets.ModelViewSet):
     queryset = Cotacao.objects.all()
+    serializer_class = CotacaoSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication,TokenAuthentication]
+
+class ItemCotacaoViewSet(viewsets.ModelViewSet):
+    queryset = ItemCotacao.objects.all()
     serializer_class = CotacaoSerializers
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication,TokenAuthentication]

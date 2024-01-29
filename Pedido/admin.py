@@ -5,8 +5,7 @@ from .models import Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao
 # Register your models here.
 @admin.register(Solicitacao)
 class SolicitacaoAdmin(admin.ModelAdmin):
-    list_display = ('id','operador','solicitante','observacao','imagem','empresa',)
-
+    list_display = ('id','solicitante','observacao','empresa',)
 
 
 @admin.register(PedidoCompra)
@@ -31,8 +30,8 @@ class ItemPedidoCompraAdmin(admin.ModelAdmin):
 
 @admin.register(ItemSolicitacao)
 class ItemSolicitacaoAdmin(admin.ModelAdmin):
-    list_display = ('id','solicitacao','codigo','codigo_interno','descricao','quantidade','criacao',
-                    'atualizacao')
+    list_display = ('id','solicitacao','codigo','descricao','quantidade','criacao',
+                    )
 
 @admin.register(Cotacao)
 class CotacaoAdmin(admin.ModelAdmin):
