@@ -100,7 +100,7 @@ class PedidoCompra(Base):
 
 
     def __str__(self):
-        return f'{self.codigo}'
+        return f'{self.id}-{self.solicitante}'
 
     class Meta:
         verbose_name = "Pedido de Compra"

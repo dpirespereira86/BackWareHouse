@@ -75,7 +75,8 @@ class CotacaoSerializers(serializers.ModelSerializer):
     itens_cotacoes = ItemCotacaoSerializers(many=True)
     class Meta:
         model = Cotacao
-        fields=( 'id',
+        fields=(
+        'id',
         'operador',
         'pedido_compra',
         'fornecedor',
@@ -107,7 +108,7 @@ class CotacaoSerializers(serializers.ModelSerializer):
 class ItemPedidoCompraSerializers(serializers.ModelSerializer):
     class Meta:
         model = ItemPedidoCompra
-        fields=('id','pedido_compra','codigo','descricao','quantidade',)
+        fields=('id','pedido_compra','codigo','descricao','quantidade','valor_unitario','valor_total','fornecedor')
 
 class ItemAvulsoPedidoSerializers(serializers.ModelSerializer):
     class Meta:

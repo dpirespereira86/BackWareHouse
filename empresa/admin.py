@@ -8,7 +8,7 @@ from empresa.models import Empresa, Filial, Fornecedor
 class EmpresaAdmin(admin.ModelAdmin):
     list_display = ('id','razao_social','cnpj','endereco','numero','bairro','cidade','uf','telefone',
     'first_name_responsavel','last_name_responsavel','email_responsavel','telefone_responsavel','wms',
-    'compras','frota','ativo','senha_inicial','data_cadastro')
+    'compras','frota','ativo','senha_inicial')
 
     """
     fieldsets = (
@@ -24,7 +24,7 @@ class EmpresaAdmin(admin.ModelAdmin):
 class FilialAdmin(admin.ModelAdmin):
     list_display = ('razao_social','cnpj','numero_empresa','endereco','numero','bairro','cidade','uf','telefone',
     'first_name_responsavel','last_name_responsavel','email_responsavel','telefone_responsavel','wms',
-    'compras','frota','ativo','senha_inicial','data_cadastro')
+    'compras','frota','ativo','senha_inicial')
 
     """fieldsets = (
         ('Dados da Filial', {'fields': ('razao_social','cnpj','endereco','numero','bairro','cidade','uf','telefone')}),

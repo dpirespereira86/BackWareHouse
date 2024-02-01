@@ -4,15 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Ajuste Fornecedor/Pedido">
+    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Fechamento Dia">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Armazem/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0002_alter_itempedidocompra_options_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0003_remove_itemavulso_empresa_and_more.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0004_remove_itemavulsopedido_empresa_and_more.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pedido/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Produto/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Usuario/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/empresa/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/empresa/migrations/0001_initial.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/empresa/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/empresa/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/empresa/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,14 +46,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Diego Pires/OneDrive - SMART RJ CONCESSIONARIA DE ILUMINACAO PUBLICA SPE/Projetos Python/Empresa"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Diego Pires/OneDrive - SMART RJ CONCESSIONARIA DE ILUMINACAO PUBLICA SPE/Projetos Python/Empresa&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Diego Pires\OneDrive - SMART RJ CONCESSIONARIA DE ILUMINACAO PUBLICA SPE\Projetos Python\Empresa" />
@@ -108,7 +116,23 @@
       <option name="project" value="LOCAL" />
       <updated>1706537569215</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Fechamento Dia">
+      <option name="closed" value="true" />
+      <created>1706558068002</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1706558068005</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Fechamento Dia">
+      <option name="closed" value="true" />
+      <created>1706558167711</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1706558167711</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -125,7 +149,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Inicial" />
     <MESSAGE value="Ajuste Fornecedor/Pedido" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ajuste Fornecedor/Pedido" />
+    <MESSAGE value="Fechamento Dia" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fechamento Dia" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

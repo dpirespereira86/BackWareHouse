@@ -8,7 +8,7 @@ import requests
 
 from Usuario.models import Usuario
 from .models import Empresa, Filial, Fornecedor
-from .serializers import EmpresaSerializers,FilialSerializers
+from .serializers import EmpresaSerializers,FilialSerializers,EmpresaCreatedSerializers
 
 
 # Create your views here.
@@ -63,20 +63,19 @@ class FilialViewSet(viewsets.ModelViewSet):
 
 class EmpresaCreateduserViewSet(viewsets.ModelViewSet):
     queryset = Empresa.objects.all()
-    serializer_class = EmpresaSerializers
+    serializer_class = EmpresaCreatedSerializers
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        empresa = Empresa.objects.last()
+        empresa = Empresa.objects.get(cnpj=request.data['cnpj'])
         Usuario.objects.create_superuser(
             email=empresa.email_responsavel,
             password=empresa.senha_inicial,
             first_name=empresa.first_name_responsavel,
             last_name=empresa.last_name_responsavel,
             empresa=empresa,
-
         )
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
