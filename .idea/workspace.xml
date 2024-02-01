@@ -4,22 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Fechamento Dia">
+    <list default="true" id="8e9ec9aa-b4d2-46c9-8070-d7e4fde63295" name="Changes" comment="Configuração">
+      <change afterPath="$PROJECT_DIR$/configuracao/serializers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configuracao/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Armazem/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0002_alter_itempedidocompra_options_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0003_remove_itemavulso_empresa_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/migrations/0004_remove_itemavulsopedido_empresa_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pedido/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Produto/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Usuario/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Armazem/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Armazem/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Armazem/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Armazem/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pedido/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pedido/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Produto/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/Produto/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Produto/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Produto/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Usuario/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/Usuario/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Usuario/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/Usuario/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Usuario/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Usuario/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/empresa/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/empresa/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/empresa/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/empresa/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -132,7 +129,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706558167711</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Configuração">
+      <option name="closed" value="true" />
+      <created>1706804403597</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1706804403597</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -150,7 +155,8 @@
     <MESSAGE value="Inicial" />
     <MESSAGE value="Ajuste Fornecedor/Pedido" />
     <MESSAGE value="Fechamento Dia" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fechamento Dia" />
+    <MESSAGE value="Configuração" />
+    <option name="LAST_COMMIT_MESSAGE" value="Configuração" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

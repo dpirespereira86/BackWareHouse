@@ -35,6 +35,7 @@ class UsuarioManager(BaseUserManager):
         return self._create_user(email,password,**extra_fields)
 
 class Usuario(AbstractUser):
+
     email = models.EmailField('E-mail',unique=True)
     is_staff = models.BooleanField('Membro da equipe',default=True)
     empresa = models.CharField(max_length=50,null=True,blank=True)

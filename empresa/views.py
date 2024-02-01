@@ -1,14 +1,14 @@
 import json
 
 from rest_framework import viewsets, status, permissions
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError,_get_error_details
 import requests
 
 from Usuario.models import Usuario
 from .models import Empresa, Filial, Fornecedor
-from .serializers import EmpresaSerializers,FilialSerializers,EmpresaCreatedSerializers
+from .serializers import EmpresaSerializers, FilialSerializers, EmpresaCreatedSerializers, FornecedorSerializers
 
 
 # Create your views here.
@@ -82,6 +82,17 @@ class EmpresaCreateduserViewSet(viewsets.ModelViewSet):
 
 class FornecedoresViewSet(viewsets.ModelViewSet):
     queryset = Fornecedor.objects.all()
-    serializer_class = EmpresaSerializers
+    serializer_class = FornecedorSerializers
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [SessionAuthentication,TokenAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        user = Usuario.objects.get(email=request.user)
+        empresa = Empresa.objects.get(razao_social=user.empresa)
+        dados = request.data.copy()
+        dados.__setitem__('empresa',empresa.id)
+        serializer = self.get_serializer(data=dados)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

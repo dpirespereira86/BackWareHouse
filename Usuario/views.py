@@ -2,6 +2,8 @@
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
 import requests
+
+from empresa.models import Empresa
 from .models import Usuario
 from .serializers import UserSerializers
 from rest_framework.authtoken.views import obtain_auth_token
@@ -35,7 +37,7 @@ class PerfilViewSet(viewsets.ModelViewSet):
 
 class ObtainAuthToken(APIView):
     """
-    Sobrescrita do metodo original do python para retorno do token a partir do username e password
+     Sobrescrita do metodo original do python para retorno do token a partir do username e password
 
     """
     throttle_classes = ()
@@ -82,13 +84,14 @@ class ObtainAuthToken(APIView):
 
     def post(self, request, *args, **kwargs):
         usuario = Usuario.objects.get(username=request.data['username'])
-        empresa = requests.get(f'http://127.0.0.1:8080/api/v1/empresa/{usuario.empresa}').json()
+        empresa = usuario.empresa
+        empresa = Empresa.objects.get(razao_social=empresa)
         """
+              
         Verifica de a empresa está ativa e habilitada para wms
         
         """
-        print('Passaei aqui')
-        if empresa['wms'] == True and empresa['ativo'] == True :
+        if empresa.wms == True and empresa.ativo == True :
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user = serializer.validated_data['user']

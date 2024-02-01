@@ -13,8 +13,23 @@ class Base(models.Model):
     class Meta:
         abstract =True
 class Unidade(Base):
+    """
+        FIFO - Primeiro a entrar, primeiro a sair;
+        FEFO - Primeiro a vencer, primeiro a sair;
+        LIFO - Último que Entra é o Primeiro que Sair;
+
+    """
+    ESTOQUE_CONTROLE_CHOICE = \
+        (
+            ("FIFO", "1"),
+            ("FEFO", "2"),
+            ("LIFO", "3")
+        )
+
+
     nome= models.CharField(max_length=30,unique=True)
     empresa = models.ForeignKey(Empresa,related_name='unidades',on_delete=models.CASCADE)
+    controle_estoque = models.CharField(max_length=50,choices=ESTOQUE_CONTROLE_CHOICE)
 
 
     def __str__(self):

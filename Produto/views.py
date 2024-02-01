@@ -1,6 +1,8 @@
 import requests
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
+
+from empresa.models import Empresa
 from .models import Produto,Familia
 from .serializers import ProdutoSerializers,FamiliaSerializers,ProdutoEstoqueSerializers
 from rest_framework import viewsets, status
@@ -24,7 +26,8 @@ class ProdutoViewSet(viewsets.ModelViewSet):
         """
         usuario = Usuario.objects.get(email=request.user)
         dados = request.data.copy()
-        dados.__setitem__('empresa', f'{usuario.empresa}')
+        empresa = Empresa.objects.get(razao_social=usuario.empresa)
+        dados.__setitem__('empresa', empresa.id)
         return dados
 
     def create(self, request, *args, **kwargs):

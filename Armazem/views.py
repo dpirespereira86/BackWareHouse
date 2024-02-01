@@ -26,7 +26,7 @@ class UnidadeViewSet(viewsets.ModelViewSet):
     queryset = Unidade.objects.all()
     serializer_class = UnidadeSerializers
     permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [SessionAuthentication,TokenAuthentication]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

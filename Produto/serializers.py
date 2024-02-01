@@ -8,7 +8,7 @@ class ProdutoSerializers(serializers.ModelSerializer):
     class Meta:
         model = Produto
         fields=('id','codigo','codigo_Auxiliar','descricao','familia','unidade','tipo_item','ativo','especificacao',
-    'prazo_frete','peso','observacao','comprimento','largura','altura','imagem','empresa')
+    'prazo_frete_medio','peso','observacao','comprimento','largura','altura','imagem','empresa','fornecedor')
 
 class ProdutoEstoqueSerializers(serializers.ModelSerializer):
     estoques= EstoqueProdutoSerializers(many=True)

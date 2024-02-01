@@ -81,3 +81,20 @@ class AprovacaoViewSet(viewsets.ModelViewSet):
     serializer_class = AprovacaoSerializers
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication,TokenAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        dados = request.data.copy()
+        usuario = Usuario.objects.get(email=request.user)
+        dados.__setitem__('usuario', usuario.id)
+
+        solicitacao = Solicitacao.objects.get(id=request.data['solicitacao'])
+
+
+
+
+
+        serializer = self.get_serializer(data=dados)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
