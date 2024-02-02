@@ -2,13 +2,13 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions, status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.response import Response
-
 from Produto.models import Produto
 from configuracao.models import Aprovacao_Config
 from Usuario.models import Usuario
 from configuracao.models import Configuracao
 from empresa.models import Empresa
-from .models import Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao,ItemCotacao,AprovacaoSolicitacao
+from .models import (Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao,ItemCotacao,AprovacaoSolicitacao,
+                     ItemAvulsoPedido,ItemAvulso)
 from .serializers import (SolictacaoSerializers,PedidoCompraSerializers,
                           ItemPedidoCompraSerializers,ItemSolicitacaoSerializers,CotacaoSerializers,AprovacaoSerializers)
 from rest_framework.exceptions import APIException
@@ -118,7 +118,7 @@ class AprovacaoViewSet(viewsets.ModelViewSet):
                     if aprovacao_solictacao.filter(usuario=aprovacao.pessoa):
                         x=x+1
 
-        if x == len(aprovacao_config):
+        if x == len(aprovacao_config) and request.data['aprovado']==True:
             PedidoCompra.objects.create(
                 operador = usuario,
                 solicitante= solicitacao.solicitante,
@@ -134,18 +134,30 @@ class AprovacaoViewSet(viewsets.ModelViewSet):
             pedido = PedidoCompra.objects.last()
             print(pedido)
             itens = ItemSolicitacao.objects.filter(solicitacao=solicitacao.id)
+            itens_avulso = ItemAvulso.objects.filter(solicitacao=solicitacao.id)
+            #TODO: Ajustar Salamento dos itens
 
-            for item in itens:
+            for ite in itens:
 
                 ItemPedidoCompra.objects.create(
                     pedido_compra=pedido,
-                    codigo=item.codigo,
-                    descricao=item.descricao,
-                    quantidade=item.quantidade,
+                    codigo=ite.codigo,
+                    descricao=ite.descricao,
+                    quantidade=ite.quantidade,
                     prazo_de_entrega=0,
                     valor_unitario=0.00,
                     valor_total=0,
-                    fornecedor=Produto.objects.get(codigo=item.codigo).fornecedor
+                    fornecedor=Produto.objects.get(codigo=ite.codigo).fornecedor
+                )
+
+            print(ItemPedidoCompra.objects.last())
+            for item in itens_avulso:
+                ItemAvulsoPedido.objects.create(
+                 pedido_compra = pedido,
+                 descricao=item.descricao,
+                 quantidade=item.quantidade,
+                 fornecedor_indicado='',
+                 total=0.00,
                 )
 
         headers = self.get_success_headers(serializer.data)

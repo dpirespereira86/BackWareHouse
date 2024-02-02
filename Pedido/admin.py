@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao,AprovacaoSolicitacao
+from .models import (Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao,AprovacaoSolicitacao,
+                     ItemAvulsoPedido,ItemAvulso)
 
 
 # Register your models here.
@@ -37,9 +38,32 @@ class CotacaoAdmin(admin.ModelAdmin):
 
 
 @admin.register(AprovacaoSolicitacao)
-class ItemSolicitacaoAdmin(admin.ModelAdmin):
+class AprovacaoSolicitacaoAdmin(admin.ModelAdmin):
     list_display = ('usuario',
     'justificativa',
     'aprovado',
     'solicitacao',
                     )
+
+@admin.register(ItemAvulsoPedido)
+class ItemAvulsoPedidoAdmin(admin.ModelAdmin):
+    list_display = (
+     'id',
+    'pedido_compra',
+    'descricao',
+    'quantidade',
+    'fornecedor_indicado',
+    'total',
+)
+
+@admin.register(ItemAvulso)
+class ItemSolicitacaoAvulsoAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'solicitacao',
+        'descricao',
+        'quantidade',
+        'imagem',
+        'fornecedor_indicado',
+        'total',
+)
