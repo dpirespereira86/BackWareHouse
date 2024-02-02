@@ -5,9 +5,7 @@ from .models import Configuracao,Aprovacao_Config
 @admin.register(Configuracao)
 class ConfigAdmin(admin.ModelAdmin):
     list_display = (
-    'id',
     'empresa',
-    'pessoa',
     'geracao_pedido_auto',
     )
 
@@ -16,4 +14,5 @@ class AprovacaoConfigAdmin(admin.ModelAdmin):
     list_display = (
         'pessoa',
         'nivel',
+        'configuracao'
     )

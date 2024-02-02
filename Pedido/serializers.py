@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (Solicitacao,PedidoCompra,ItemPedidoCompra,ItemSolicitacao,Cotacao,ItemCotacao,ItemAvulso,
-                     ItemAvulsoPedido)
+                     ItemAvulsoPedido,AprovacaoSolicitacao)
 
 ######################################### Solicitações #################################################################
 class ItemSolicitacaoSerializers(serializers.ModelSerializer):
@@ -147,7 +147,7 @@ class PedidoCompraSerializers(serializers.ModelSerializer):
 ####################################################### Aprovacao ######################################################
 class AprovacaoSerializers(serializers.ModelSerializer):
     class Meta:
-        model = PedidoCompra
+        model = AprovacaoSolicitacao
         fields=(
             'usuario',
             'justificativa',

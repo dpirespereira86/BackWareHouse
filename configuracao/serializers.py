@@ -10,20 +10,19 @@ class AprovConfigSerializers(serializers.ModelSerializer):
         'nivel',
         )
 class ConfigSerializers(serializers.ModelSerializer):
-    pessoas = AprovConfigSerializers(many=True)
+    aprovacoes_config = AprovConfigSerializers(many=True)
     class Meta:
         model = Configuracao
         fields=(
-    'id',
+
     'empresa',
-    'pessoa',
     'geracao_pedido_auto',
-    'pessoas'
+    'aprovacoes_config'
     )
 
     def create(self, validated_data):
-        pessoas_data = validated_data.pop('pessoas')
-        configuracoes = Configuracao.objects.create(**validated_data)
-        for pessoas_data in pessoas_data:
-            Aprovacao_Config.objects.create(configuracoes=configuracoes, **pessoas_data)
-        return configuracoes
+        aprovacoes_data = validated_data.pop('aprovacoes_config')
+        configuracao = Configuracao.objects.create(**validated_data)
+        for aprovacoes_data in aprovacoes_data:
+            Aprovacao_Config.objects.create(configuracao=configuracao, **aprovacoes_data)
+        return configuracao

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao
+from .models import Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao,AprovacaoSolicitacao
 
 
 # Register your models here.
@@ -11,7 +11,7 @@ class SolicitacaoAdmin(admin.ModelAdmin):
 @admin.register(PedidoCompra)
 class PedidoAdmin(admin.ModelAdmin):
     list_display = ('id','operador','solicitante','observacao','imagem','empresa','estimativa_valor','valor_pedido',
-    'prazo_de_entrega', 'criacao','atualizacao')
+    'prazo_de_entrega')
 
 @admin.register(ItemPedidoCompra)
 class ItemPedidoCompraAdmin(admin.ModelAdmin):
@@ -25,8 +25,6 @@ class ItemPedidoCompraAdmin(admin.ModelAdmin):
     'valor_total',)
 
 
-
-
 @admin.register(ItemSolicitacao)
 class ItemSolicitacaoAdmin(admin.ModelAdmin):
     list_display = ('id','solicitacao','codigo','descricao','quantidade','criacao',
@@ -37,4 +35,11 @@ class CotacaoAdmin(admin.ModelAdmin):
     list_display = ( 'id','operador','pedido_compra','fornecedor','contato','email_contato','observacao',
     'empresa','valor_pedido','prazo_de_entrega','orcamento','justificativa','fechado')
 
-    
+
+@admin.register(AprovacaoSolicitacao)
+class ItemSolicitacaoAdmin(admin.ModelAdmin):
+    list_display = ('usuario',
+    'justificativa',
+    'aprovado',
+    'solicitacao',
+                    )

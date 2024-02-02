@@ -23,10 +23,10 @@ class PerfilViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializers
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
         user = request.data.copy()
+        print(request.data['email'])
         user.__setitem__('username', request.data['email'])
-        print(user)
+        print('Testando Usuario',user)
         serializer = self.get_serializer(data=user)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -86,10 +86,9 @@ class ObtainAuthToken(APIView):
         usuario = Usuario.objects.get(username=request.data['username'])
         empresa = usuario.empresa
         empresa = Empresa.objects.get(razao_social=empresa)
-        """
-              
-        Verifica de a empresa está ativa e habilitada para wms
-        
+        """     
+         Verifica de a empresa está ativa e habilitada para wms
+         
         """
         if empresa.wms == True and empresa.ativo == True :
             serializer = self.get_serializer(data=request.data)

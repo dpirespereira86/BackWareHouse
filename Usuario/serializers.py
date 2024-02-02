@@ -3,8 +3,7 @@ from .models import Usuario
 
 
 
-
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields=('first_name','last_name','email','empresa','password')
+        fields=('first_name','last_name','email','empresa','password','username')

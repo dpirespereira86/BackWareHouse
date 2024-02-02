@@ -70,9 +70,9 @@ class ItemAvulso(Base):
 class AprovacaoSolicitacao(Base):
     usuario = models.ForeignKey(verbose_name='Usuarios',to=Usuario,related_name=
     'aprovacoes',on_delete=models.CASCADE)
-    justificativa = models.TextField(verbose_name='Observação',blank=False,null=False)
+    justificativa = models.TextField(verbose_name='Observação',blank=True,null=True)
     aprovado = models.BooleanField('Aprovado',default=False)
-    solicitacao = models.ForeignKey(Solicitacao, related_name="itens_solictacao", on_delete=models.CASCADE)
+    solicitacao = models.ForeignKey(Solicitacao, related_name='aprovacoes', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.solicitacao} - {self.justificativa}'
@@ -81,12 +81,13 @@ class AprovacaoSolicitacao(Base):
         verbose_name = "Aprovação de Solicitação"
         verbose_name_plural = "Aprovações de Solicitações"
         db_table = "Aprovacao_Solicitacao_de_Compra"
+        unique_together = ["usuario", "solicitacao"]
 
 
 class PedidoCompra(Base):
 
     id = models.AutoField(primary_key=True)
-    operador = models.CharField(max_length=30, null=False, blank=False)
+    operador = models.ForeignKey(Usuario,related_name='pedido_compras',on_delete=models.CASCADE)
     solicitante = models.CharField(max_length=30, null=False, blank=False)
     observacao = models.TextField(max_length=200, blank=True, null=True)
     imagem = models.ImageField(default='', null=True, blank=True)
@@ -95,8 +96,7 @@ class PedidoCompra(Base):
     valor_pedido = models.DecimalField(max_digits=5,decimal_places=2)
     prazo_de_entrega = models.IntegerField(default=0, null=True, blank=True)
     nf = models.FileField(upload_to='arquivo/nf',blank=True, null=True)
-    criacao = models.DateTimeField(auto_now_add=True)
-    atualizacao = models.DateTimeField(auto_now_add=True)
+
 
 
     def __str__(self):
@@ -123,7 +123,7 @@ class ItemPedidoCompra(Base):
     fornecedor = models.ForeignKey(Fornecedor, related_name='itens_pedido_compra', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.solicitacao}'
+        return f'{self.pedido_compra}'
 
     class Meta:
         verbose_name = "Item Pedido de Compra"

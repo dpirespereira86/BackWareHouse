@@ -85,6 +85,7 @@ class FamiliaViewSet(viewsets.ModelViewSet):
     queryset = Familia.objects.all()
     serializer_class = FamiliaSerializers
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -99,3 +100,13 @@ class FamiliaViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    def create(self, request, *args, **kwargs):
+        dados = request.data.copy()
+        usuario = Usuario.objects.get(email=request.user)
+        empresa = Empresa.objects.get(razao_social=usuario.empresa)
+        dados.__setitem__('empresa', empresa.id)
+        serializer = self.get_serializer(data=dados)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

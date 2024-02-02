@@ -21,6 +21,8 @@ from Produto.urls import router_produto
 from Usuario.urls import router_usuario
 from Pedido.urls import router_pedido
 from empresa.urls import router_empresa
+from configuracao.urls import router_config
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +32,7 @@ urlpatterns = [
     path('api/v1/usuario/', include((router_usuario.urls,'Usuario'),namespace='Usuario')),
     path('api/v1/pedido/', include((router_pedido.urls,'Pedido'),namespace='Pedido')),
     path('api/v1/empresa/', include((router_empresa.urls,'empresa'),namespace='empresa')),
+    path('api/v1/configuracao/', include((router_config.urls,'configuracao'),namespace='configuracao')),
     path('api/v1/token/', include('Usuario.urls'))
 ]
 
