@@ -170,25 +170,6 @@ class Doca(Base):
         verbose_name_plural = "Docas"
         db_table = "Doca"
 
-
-
-class ItensConferencia(Base):
-    id = models.AutoField(primary_key=True,unique=True)
-    codigo=models.ForeignKey(Produto,related_name='itens_conferencias',on_delete=models.CASCADE)
-    codigo_interno = models.CharField(max_length=30)
-    descricao = models.CharField(max_length=100)
-    quantidade = models.DecimalField(max_digits=5,decimal_places=2)
-    empresa = models.ForeignKey(Empresa,related_name='itens_conferencias',on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.codigo}'
-
-    class Meta:
-        verbose_name = "Item_conferencia"
-        verbose_name_plural="Itens_conferencias"
-        db_table = "Item_Conferencia"
-
-
 class Conferencia(Base):
 
     TIPO_CONFERENCIA_CHOICE = (('1','palete fechado'), ('2','fechado misto'),
@@ -199,13 +180,11 @@ class Conferencia(Base):
     id = models.AutoField(primary_key=True, unique=True)
     tipo_conferencia = models.CharField(max_length=100, choices=TIPO_CONFERENCIA_CHOICE, null=False, blank=False)
     operador = models.ForeignKey(Usuario,related_name='conferencias',on_delete=models.CASCADE)
-    posicao = models.ForeignKey(Posicao,on_delete=models.CASCADE)
     empresa = models.ForeignKey(Empresa,related_name='conferencias',on_delete=models.CASCADE)
-    aprovado=models.BooleanField(default=False)
     pedido = models.ForeignKey(PedidoCompra,related_name='conferencias',on_delete=models.CASCADE)
     nf= models.IntegerField()
-    itens_conferencia = models.ForeignKey(ItensConferencia,related_name='conferencias',on_delete=models.CASCADE)
-    fluxo = models.CharField(max_length=100, choices=FLUXO_CHOICE, null=False, blank=False)
+    fluxo = models.CharField(max_length=100, choices=FLUXO_CHOICE, null=False, blank=False),
+
 
     def __str__(self):
         return f'{self.tipo_conferencia}'
@@ -215,6 +194,37 @@ class Conferencia(Base):
         verbose_name_plural="Conferências"
         db_table = "Conferencia"
         unique_together = ['id', 'empresa']
+
+class ItensConferencia(Base):
+    conferencia = models.ForeignKey(Conferencia,related_name='itens_conferencias',on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True,unique=True)
+    codigo=models.ForeignKey(Produto,related_name='itens_conferencias',on_delete=models.CASCADE)
+    quantidade = models.DecimalField(max_digits=5,decimal_places=2)
+
+
+    def __str__(self):
+        return f'{self.codigo}'
+
+    class Meta:
+        verbose_name = "Item_conferencia"
+        verbose_name_plural="Itens_conferencias"
+        db_table = "Item_Conferencia"
+
+class AprovacaoConferencia(Base):
+    usuario = models.ForeignKey(verbose_name='Usuarios',to=Usuario,related_name=
+    'aprovacoes_conferencia',on_delete=models.CASCADE)
+    justificativa = models.TextField(verbose_name='Observação',blank=True,null=True)
+    aprovado = models.BooleanField('Aprovado',default=False)
+    conferencia = models.OneToOneField(Conferencia,related_name='aprovacoes_conferencia',
+                                    on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.conferencia} - {self.justificativa}'
+
+    class Meta:
+        verbose_name = "Aprovação de Conferência"
+        verbose_name_plural = "Aprovações de Conferências"
+        db_table = "Aprovacao_conferencia"
 
 class Transitorio(Base):
 

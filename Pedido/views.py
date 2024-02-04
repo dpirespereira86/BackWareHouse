@@ -108,7 +108,7 @@ class AprovacaoViewSet(viewsets.ModelViewSet):
         verifica_ultima_aprovacao(aprovacao_config,
                                                request.data['aprovado'],solicitacao,
                                                usuario,empresa,configuracao,
-                                               aprovacao_solictacao)
+                                               aprovacao_solictacao,request.data['justificativa'])
         serializer = self.get_serializer(data=dados)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -129,6 +129,7 @@ class SolicitacaoSemAprovacaoViewSet(viewsets.ModelViewSet):
         empresa = Empresa.objects.get(razao_social=usuario.empresa)
         configuracao = Configuracao.objects.get(empresa=empresa.id)
         aprovacao_config = Aprovacao_Config.objects.filter(configuracao=configuracao.id)
+        print(aprovacao_config)
         queryset = queryset.filter(empresa=empresa)
         newquery = filtra_solicitacao_sem_aprovacao_por_nivel(queryset,
                                                               AprovacaoSolicitacao,

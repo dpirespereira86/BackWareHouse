@@ -3,6 +3,7 @@ from Pedido.models import (PedidoCompra, ItemPedidoCompra, ItemSolicitacao,
                            ItemAvulso, ItemAvulsoPedido)
 from Produto.models import Produto
 from notifications.signals import notify
+from django.core.mail import send_mail
 
 
 
@@ -58,31 +59,42 @@ def permissao_aprovar(user,config_aprovacao):
         raise APIException('Usuário não possui permissão para aprovar este pedido, '
                            'procure o administrador do sistema')
 
-def count_aprovacao(configuracao,aprovacao_solictacao,
-                    aprovacao_config):
+def count_aprovacao(configuracao,aprovacao_solictacao):
     x=0
     if configuracao.geracao_pedido_auto == True:
-        if len(aprovacao_solictacao) == len(aprovacao_config):
-            for aprovacao in aprovacao_config:
-                if (aprovacao_solictacao.filter(usuario=aprovacao.pessoa)
-                        and aprovacao.aprovado == True):
+            for aprovacao in aprovacao_solictacao:
+                if aprovacao.aprovado == True:
                     x = x + 1
     return int(x)
 
 def verifica_ultima_aprovacao(aprovacao_config,aprovado,solicitacao,
-                              usuario,empresa,configuracao,aprovacao_solictacao):
-
-
-    if (count_aprovacao(configuracao,aprovacao_solictacao,aprovacao_config) == len(aprovacao_config)
-            and aprovado==True):
+                              usuario,empresa,configuracao,aprovacao_solictacao,justificativa):
+    if (count_aprovacao(configuracao,aprovacao_solictacao) + 1 == len(aprovacao_config)
+            and bool(aprovado) == True):
         pedido = convert_solictacaoo_pedido(solicitacao,usuario,empresa)
         create_item_pedido(pedido,solicitacao)
         create_item_pedido_avulso(solicitacao,pedido)
+        notify.send(usuario, recipient=solicitacao.solicitante, verb=f'SC nº:{solicitacao.id} está '
+                                                    f'foi aprovada e gerou o PC nº{pedido.id}', )
+        send_mail(f'SC nº:{solicitacao.id} Aprovada!', f'SC nº:{solicitacao.id} está '
+                                                    f'foi aprovada e gerou o PC nº{pedido.id}'
+                  , 'sistema@2dprojetos.com', [solicitacao.solicitante])
     else:
-        nivel = aprovacao_config.get(pessoa=usuario).nivel
-        pessoa = aprovacao_config.get(nivel=nivel + 1).pessoa
-        notify.send(usuario,recipient= pessoa, verb=f'SC nº:{solicitacao.id} está '
-                                          f'aguardando aprovação')
+        if aprovado == True:
+            nivel = aprovacao_config.get(pessoa=usuario).nivel
+            pessoa = aprovacao_config.get(nivel=nivel + 1).pessoa
+            notify.send(usuario,recipient= pessoa, verb=f'SC nº:{solicitacao.id} está '
+                                              f'aguardando aprovação',)
+            send_mail('Solicitção de Aprovacao de Pedido',f'SC nº:{solicitacao.id} está '
+                                              f'aguardando aprovação','2dprojetos@2dprojetos.com',
+                      [pessoa])
+        else:
+           notify.send(usuario,recipient=solicitacao.solicitante,
+                       verb=f'SC nº{solicitacao.id} não autorizada por {usuario},'
+                              f' conforme jsutificativa {justificativa}')
+           send_mail(f'SC nº:{solicitacao.id} reprovada!', f'SC nº{solicitacao.id} não autorizada por {usuario},'
+                              f' conforme jsutificativa {justificativa}'
+                     , 'sistema@2dprojetos.com', [solicitacao.solicitante])
 
 def filtra_solicitacao_sem_aprovacao_por_nivel(queryset,AprovacaoSolicitacao,aprovacao_config,
                                                usuario):

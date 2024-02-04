@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
+
+from empresa.models import Empresa
 from .models import Unidade, Posicao, MOVIMENTACAO, Item, Estoque, Conferencia, Transitorio
 from .serializers import (
     UnidadeSerializers,
@@ -306,6 +308,25 @@ class ConferenciaViewSet(viewsets.ModelViewSet):
     serializer_class = ConferenciaSerializers
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [TokenAuthentication,SessionAuthentication]
+    def create(self, request, *args, **kwargs):
+        usuario = Usuario.objects.get(email=request.user)
+        empresa = Empresa.objects.get(razao_social=usuario.empresa)
+
+        produtos_conferidos = []
+        for item in request.data['itens']:
+              if Produto.objects.filter(codigo=item.codigo):
+                  produtos_conferidos = Produto.objects.filter(codigo=item.codigo)
+              else:
+                  embalagem = Embalagem.objects.filter(codigo=item.codigo)
+                  while embalagem.quantidade_produto:
+                    produtos_conferidos = Produto.objects.filter(codigo=item.codigo)
+        print(produtos_conferidos)
+        serializer = self.get_serializer(data=[])
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class TransitorioViewSet(viewsets.ModelViewSet):
     queryset = Transitorio.objects.all()

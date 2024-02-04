@@ -11,7 +11,6 @@ class Base(models.Model):
     class Meta:
         abstract =True
 
-
 class Configuracao(Base):
 
     id = models.AutoField(primary_key=True)

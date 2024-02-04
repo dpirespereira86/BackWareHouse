@@ -149,9 +149,16 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = 'Usuario.Usuario'
 #NOTIFICATIONS_NOTIFICATION_MODEL = 'notification.Notification'
 
-
+#Permissão de cors acesso da messma maquinas em outras portas
 CORS_ALLOWED_ORIGINS = [
 
     "http://localhost:8080",
     "http://127.0.0.1:8080",
 ]
+
+#Configuração de e-mail
+EMAIL_HOST = 'smtp.titan.email'
+EMAIL_HOST_USER= 'sistema@2dprojetos.com'
+EMAIL_HOST_PASSWORD = '883810dC*'
+EMAIL_PORT= 587
+EMAIL_USE_TLS= True
