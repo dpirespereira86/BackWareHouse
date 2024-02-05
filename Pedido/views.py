@@ -121,10 +121,13 @@ class FechamentoCotacaoViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         if str(instance.fechado) != request.data['fechado']:
-            print('aqui')
-            serializer = self.get_serializer(instance, data=request.data, partial=partial)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
+            contacoes = Cotacao.objects.filter(pedido_compra=instance.pedido_compra)
+            if len(contacoes) == 3:
+                serializer = self.get_serializer(instance, data=request.data, partial=partial)
+                serializer.is_valid(raise_exception=True)
+                self.perform_update(serializer)
+            else:
+                raise APIException('Pedido com menos de 3 cotações')
         else:
             raise APIException('Status já realizado')
 
