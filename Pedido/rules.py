@@ -39,6 +39,7 @@ def create_item_pedido(pedido_compra,solicitacao):
           fornecedor=Produto.objects.get(codigo=ite.codigo).fornecedor
       )
 
+
 def convert_solictacaoo_pedido(solicitacao,
                                usuario,empresa):
     PedidoCompra.objects.create(
@@ -47,7 +48,7 @@ def convert_solictacaoo_pedido(solicitacao,
         observacao='',
         imagem='',
         empresa=empresa,
-        estimativa_valor=0.00,
+        estimativa_valor=solicitacao.valor_estimado,
         valor_pedido=0.00,
         prazo_de_entrega=0,
         nf='',
@@ -74,6 +75,7 @@ def verifica_ultima_aprovacao(aprovacao_config,aprovado,solicitacao,
         pedido = convert_solictacaoo_pedido(solicitacao,usuario,empresa)
         create_item_pedido(pedido,solicitacao)
         create_item_pedido_avulso(solicitacao,pedido)
+
         notify.send(usuario, recipient=solicitacao.solicitante, verb=f'SC nº:{solicitacao.id} está '
                                                     f'foi aprovada e gerou o PC nº{pedido.id}', )
         send_mail(f'SC nº:{solicitacao.id} Aprovada!', f'SC nº:{solicitacao.id} está '
@@ -117,3 +119,15 @@ def filtra_solicitacao_sem_aprovacao_por_nivel(queryset,AprovacaoSolicitacao,apr
             if usuario == aprovacao_config.get(nivel=count_aprovado + 1).pessoa:
                 newquery.append(query)
     return newquery
+
+def valor_estimado(itens_solicitacoes,itens_avulso):
+    valor_total = 0.00
+    for item in itens_solicitacoes:
+        produto = Produto.objects.get(id=item['codigo'])
+        valor_total = (float(produto.ultimo_preco) * float(item['quantidade'])) + valor_total
+
+    for item_avulso in itens_avulso:
+        valor_total = ((float(item_avulso['total']) * float(item_avulso['quantidade']))
+                       + valor_total)
+
+    return valor_total

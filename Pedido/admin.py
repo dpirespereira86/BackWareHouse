@@ -34,7 +34,7 @@ class ItemSolicitacaoAdmin(admin.ModelAdmin):
 @admin.register(Cotacao)
 class CotacaoAdmin(admin.ModelAdmin):
     list_display = ( 'id','operador','pedido_compra','fornecedor','contato','email_contato','observacao',
-    'empresa','valor_pedido','prazo_de_entrega','orcamento','justificativa','fechado')
+    'empresa','valor_cotacao','prazo_de_entrega','orcamento','justificativa','fechado')
 
 
 @admin.register(AprovacaoSolicitacao)

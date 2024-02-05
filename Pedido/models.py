@@ -21,7 +21,7 @@ class Solicitacao(Base):
     urgencia = models.BooleanField(verbose_name='Urgente', default=False)
     justificativa = models.TextField(verbose_name='justificativa', blank=True, null=True)
     empresa = models.ForeignKey(Empresa,related_name='solicitacoes',on_delete=models.CASCADE)
-    valor_estimado = models.BooleanField(default=False, blank=True, null=True)
+    valor_estimado = models.DecimalField(max_digits=5,decimal_places=2)
     descricao = models.TextField(verbose_name='observação', blank=False, null=False)
 
     def __str__(self):
@@ -147,6 +147,7 @@ class ItemAvulsoPedido(Base):
 
 
 class Cotacao(Base):
+    CONDICAO_COMERCIAL_CHOICES=(('1','A vista'),('2','A prazo'))
 
     id = models.AutoField(primary_key=True)
     operador = models.CharField(max_length=30, null=False, blank=False)
@@ -156,11 +157,13 @@ class Cotacao(Base):
     email_contato = models.EmailField()
     observacao = models.TextField(max_length=200, blank=True, null=True)
     empresa = models.ForeignKey(Empresa,related_name='cotações',on_delete=models.CASCADE)
-    valor_pedido = models.DecimalField(max_digits=5, decimal_places=2)
+    valor_cotacao = models.DecimalField(max_digits=5, decimal_places=2)
     prazo_de_entrega = models.IntegerField(default=0, null=True, blank=True)
     orcamento = models.FileField(upload_to='arquivo/orcamento',blank=True,null=True)
     justificativa= models.TextField(max_length=200, blank=True, null=True)
     fechado = models.BooleanField(default=False)
+    desconto = models.DecimalField(max_digits=5, decimal_places=2,blank=True,null=True)
+    condicao_comercial= models.CharField(max_length=30,choices=CONDICAO_COMERCIAL_CHOICES, null=False, blank=False)
 
 
     def __str__(self):
@@ -174,13 +177,11 @@ class Cotacao(Base):
 
 class ItemCotacao(Base):
     id = models.AutoField(primary_key=True, unique=True)
-    cotacao = models.ForeignKey(Cotacao, related_name="itens_cotacoes",on_delete=models.CASCADE)
+    cotacao = models.ForeignKey(Cotacao, related_name="itens_cotacoes",on_delete=models.CASCADE,blank=True,null=True)
     codigo = models.ForeignKey(Produto, related_name='itens_cotacoes', on_delete=models.CASCADE)
-    codigo_interno = models.CharField(max_length=30)
-    descricao = models.CharField(max_length=100)
     quantidade = models.DecimalField(max_digits=5, decimal_places=2)
     empresa = models.CharField(max_length=30, null=False, blank=False)
-    ultimo_preco=models.DecimalField(max_digits=5, decimal_places=2)
+    ultimo_preco=models.DecimalField(max_digits=5, decimal_places=2,blank=True,null=True)
     valor_unit = models.DecimalField(max_digits=5, decimal_places=2)
     total = models.DecimalField(max_digits=5, decimal_places=2)
     fornecedor = models.ForeignKey(Fornecedor, related_name='itens_cotacoes', on_delete=models.CASCADE)

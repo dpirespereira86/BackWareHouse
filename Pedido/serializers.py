@@ -61,10 +61,7 @@ class ItemCotacaoSerializers(serializers.ModelSerializer):
         'id',
         'cotacao',
         'codigo',
-        'codigo_interno',
-        'descricao',
         'quantidade',
-        'empresa',
         'ultimo_preco',
         'valor_unit',
         'total',
@@ -79,17 +76,17 @@ class CotacaoSerializers(serializers.ModelSerializer):
         'id',
         'operador',
         'pedido_compra',
-        'fornecedor',
         'contato',
         'email_contato',
         'observacao',
         'empresa',
-        'valor_pedido',
+        'valor_cotacao',
         'prazo_de_entrega',
         'orcamento',
         'justificativa',
         'fechado',
-        'fechado',
+        'desconto',
+        'condicao_comercial',
         'itens_cotacoes'
     )
 
@@ -100,6 +97,19 @@ class CotacaoSerializers(serializers.ModelSerializer):
             ItemCotacao.objects.create(cotacao=cotacao, **itens_cotacoes)
         return cotacao
 
+class CotacaoOrcamentoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Cotacao
+        fields=(
+        'orcamento',
+    )
+
+class FechamentoCotacaoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Cotacao
+        fields=(
+        'fechado',
+    )
 
 ########################################################################################################################
 

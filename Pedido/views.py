@@ -1,18 +1,20 @@
-from django.shortcuts import render
 from rest_framework import viewsets, permissions, status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.response import Response
-from Produto.models import Produto
 from configuracao.models import Aprovacao_Config
 from Usuario.models import Usuario
 from configuracao.models import Configuracao
 from empresa.models import Empresa
 from .models import (Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao,ItemCotacao,AprovacaoSolicitacao,
                      ItemAvulsoPedido,ItemAvulso)
-from .rules import permissao_aprovar, verifica_ultima_aprovacao, filtra_solicitacao_sem_aprovacao_por_nivel
+from .rules import permissao_aprovar, verifica_ultima_aprovacao, filtra_solicitacao_sem_aprovacao_por_nivel, \
+    valor_estimado
 from .serializers import (SolictacaoSerializers, PedidoCompraSerializers,
-                          ItemPedidoCompraSerializers, ItemSolicitacaoSerializers, CotacaoSerializers,
-                          AprovacaoSerializers, SolicitacaoSemAprovacaoSerializers)
+                          ItemPedidoCompraSerializers, ItemSolicitacaoSerializers,
+                          CotacaoSerializers,AprovacaoSerializers,
+                          SolicitacaoSemAprovacaoSerializers, CotacaoOrcamentoSerializers,
+                          FechamentoCotacaoSerializers)
+from rest_framework.exceptions import APIException
 
 
 # Create your views here.
@@ -28,11 +30,18 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
         dados.__setitem__('solicitante',int(usuario.id))
         empresa = Empresa.objects.get(razao_social=usuario.empresa)
         dados.__setitem__('empresa', empresa.id)
+        # Soma os valoes dos itens para fechar o valor da SC
+        dados.__setitem__('valor_estimado',
+                          valor_estimado(
+                              request.data['itens_solicitacoes'],
+                              request.data['itens_avulso']))
+
         serializer = self.get_serializer(data=dados)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 class PedidoCompraViewSet(viewsets.ModelViewSet):
     queryset = PedidoCompra.objects.all()
@@ -75,6 +84,57 @@ class CotacaoViewSet(viewsets.ModelViewSet):
     serializer_class = CotacaoSerializers
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication,TokenAuthentication]
+    def create(self, request, *args, **kwargs):
+        dados = request.data.copy()
+        #adiciona usuário
+        usuario = Usuario.objects.get(email=request.user)
+        dados.__setitem__('operador',usuario.id)
+        # adiciona empresa
+        dados.__setitem__('empresa', Empresa.objects.get(razao_social=usuario.empresa).id)
+        valor_cotacao=0
+        for item in request.data['itens_cotacoes']:
+            valor_cotacao=(float(item['valor_unit']) * float(item['quantidade'])) + valor_cotacao
+
+        dados.__setitem__('valor_cotacao',valor_cotacao )
+        serializer = self.get_serializer(data=dados)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
+
+
+class CotacaoOrcamentoViewSet(viewsets.ModelViewSet):
+    queryset = Cotacao.objects.all()
+    serializer_class = CotacaoOrcamentoSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication,TokenAuthentication]
+
+class FechamentoCotacaoViewSet(viewsets.ModelViewSet):
+    queryset = Cotacao.objects.all()
+    serializer_class = FechamentoCotacaoSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication,TokenAuthentication]
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        if str(instance.fechado) != request.data['fechado']:
+            print('aqui')
+            serializer = self.get_serializer(instance, data=request.data, partial=partial)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+        else:
+            raise APIException('Status já realizado')
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
 
 class ItemCotacaoViewSet(viewsets.ModelViewSet):
     queryset = ItemCotacao.objects.all()
@@ -129,7 +189,6 @@ class SolicitacaoSemAprovacaoViewSet(viewsets.ModelViewSet):
         empresa = Empresa.objects.get(razao_social=usuario.empresa)
         configuracao = Configuracao.objects.get(empresa=empresa.id)
         aprovacao_config = Aprovacao_Config.objects.filter(configuracao=configuracao.id)
-        print(aprovacao_config)
         queryset = queryset.filter(empresa=empresa)
         newquery = filtra_solicitacao_sem_aprovacao_por_nivel(queryset,
                                                               AprovacaoSolicitacao,
