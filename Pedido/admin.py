@@ -1,18 +1,30 @@
 from django.contrib import admin
-from .models import (Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao,AprovacaoSolicitacao,
-                     ItemAvulsoPedido,ItemAvulso)
+from .models import (Solicitacao, PedidoCompra, ItemPedidoCompra, ItemSolicitacao, Cotacao, AprovacaoSolicitacao,
+                     ItemAvulsoPedido, ItemAvulso, ItemCotacao)
 
 
 # Register your models here.
 @admin.register(Solicitacao)
 class SolicitacaoAdmin(admin.ModelAdmin):
-    list_display = ('id','solicitante','observacao','empresa',)
+    list_display = (
+                    'id',
+                    'solicitante',
+                    'observacao',
+                    'empresa',
+                    )
 
 
 @admin.register(PedidoCompra)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ('id','operador','solicitante','observacao','imagem','empresa','estimativa_valor','valor_pedido',
-    'prazo_de_entrega')
+    list_display = ('id',
+                    'operador',
+                    'solicitante',
+                    'observacao',
+                    'imagem',
+                    'empresa',
+                    'estimativa_valor',
+                    'valor_pedido',
+                    'prazo_de_entrega')
 
 @admin.register(ItemPedidoCompra)
 class ItemPedidoCompraAdmin(admin.ModelAdmin):
@@ -28,22 +40,41 @@ class ItemPedidoCompraAdmin(admin.ModelAdmin):
 
 @admin.register(ItemSolicitacao)
 class ItemSolicitacaoAdmin(admin.ModelAdmin):
-    list_display = ('id','solicitacao','codigo','descricao','quantidade','criacao',
+    list_display = ('id',
+                    'solicitacao',
+                    'codigo',
+                    'descricao',
+                    'quantidade',
+                    'criacao',
                     )
 
 @admin.register(Cotacao)
 class CotacaoAdmin(admin.ModelAdmin):
-    list_display = ( 'id','operador','pedido_compra','fornecedor','contato','email_contato','observacao',
-    'empresa','valor_cotacao','prazo_de_entrega','orcamento','justificativa','fechado')
+    list_display = (
+        'id',
+        'operador',
+        'pedido_compra',
+        'fornecedor',
+        'contato',
+        'email_contato',
+        'observacao',
+        'empresa',
+        'valor_cotacao',
+        'prazo_de_entrega',
+        'orcamento',
+        'justificativa',
+        'fechado'
+    )
 
 
 @admin.register(AprovacaoSolicitacao)
 class AprovacaoSolicitacaoAdmin(admin.ModelAdmin):
-    list_display = ('usuario',
+    list_display = (
+    'usuario',
     'justificativa',
     'aprovado',
     'solicitacao',
-                    )
+    )
 
 @admin.register(ItemAvulsoPedido)
 class ItemAvulsoPedidoAdmin(admin.ModelAdmin):
@@ -67,3 +98,18 @@ class ItemSolicitacaoAvulsoAdmin(admin.ModelAdmin):
         'fornecedor_indicado',
         'total',
 )
+
+@admin.register(ItemCotacao)
+class ItemCotacaoAvulsoAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'cotacao',
+        'codigo',
+        'quantidade',
+        'empresa',
+        'ultimo_preco',
+        'valor_unit',
+        'total',
+        'fornecedor',
+)
+

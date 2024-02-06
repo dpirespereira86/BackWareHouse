@@ -59,13 +59,13 @@ class ItemCotacaoSerializers(serializers.ModelSerializer):
         model = ItemCotacao
         fields=(
         'id',
-        'cotacao',
         'codigo',
         'quantidade',
         'ultimo_preco',
         'valor_unit',
         'total',
         'fornecedor',
+        'empresa'
         )
 
 class CotacaoSerializers(serializers.ModelSerializer):
@@ -94,7 +94,8 @@ class CotacaoSerializers(serializers.ModelSerializer):
         itens_cotacoes = validated_data.pop('itens_cotacoes')
         cotacao = Cotacao.objects.create(**validated_data)
         for itens_cotacoes in itens_cotacoes:
-            ItemCotacao.objects.create(cotacao=cotacao, **itens_cotacoes)
+            ItemCotacao.objects.create(cotacao=cotacao,empresa=cotacao.empresa.id,
+                                       **itens_cotacoes)
         return cotacao
 
 class CotacaoOrcamentoSerializers(serializers.ModelSerializer):

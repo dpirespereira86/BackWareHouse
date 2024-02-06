@@ -180,14 +180,14 @@ class ItemCotacao(Base):
     cotacao = models.ForeignKey(Cotacao, related_name="itens_cotacoes",on_delete=models.CASCADE,blank=True,null=True)
     codigo = models.ForeignKey(Produto, related_name='itens_cotacoes', on_delete=models.CASCADE)
     quantidade = models.DecimalField(max_digits=5, decimal_places=2)
-    empresa = models.CharField(max_length=30, null=False, blank=False)
+    empresa = models.CharField(max_length=30, null=True, blank=True)
     ultimo_preco=models.DecimalField(max_digits=5, decimal_places=2,blank=True,null=True)
     valor_unit = models.DecimalField(max_digits=5, decimal_places=2)
     total = models.DecimalField(max_digits=5, decimal_places=2)
     fornecedor = models.ForeignKey(Fornecedor, related_name='itens_cotacoes', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.codigo}-{self.descricao}'
+        return f'{self.codigo}'
 
     class Meta:
         verbose_name = "Item_cotacao"
