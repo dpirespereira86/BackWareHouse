@@ -187,7 +187,7 @@ class ItemCotacao(Base):
     fornecedor = models.ForeignKey(Fornecedor, related_name='itens_cotacoes', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.codigo}-{self.descricao}'
+        return f'{self.codigo}'
 
     class Meta:
         verbose_name = "Item_cotacao"
