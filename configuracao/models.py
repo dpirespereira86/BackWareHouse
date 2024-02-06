@@ -15,12 +15,8 @@ class Configuracao(Base):
 
     id = models.AutoField(primary_key=True)
     empresa = models.ForeignKey(Empresa,related_name='configuracoes',on_delete=models.CASCADE)
-    geracao_pedido_auto = models.BooleanField(default=False)
-    email_forncedor_automatico = models.BooleanField(default=False)
-    quantidade_cotacao=models.IntegerField(default=3)
-    aviso_recebimento = models.BooleanField(default=False)
-    responsavel_almoxarifado = models.ForeignKey(Usuario,related_name='configuracoes',on_delete=models.CASCADE)
-
+    geracao_pedido_auto = models.BooleanField()
+    email_forncedor_automatico = models.BooleanField()
 
     def __str__(self):
         return f'{self.id}'

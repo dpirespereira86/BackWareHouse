@@ -1,9 +1,6 @@
-from notifications.signals import notify
 from rest_framework import viewsets, permissions, status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.response import Response
-
-from Produto.models import Produto
 from configuracao.models import Aprovacao_Config
 from Usuario.models import Usuario
 from configuracao.models import Configuracao
@@ -89,7 +86,6 @@ class CotacaoViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication,TokenAuthentication]
     def create(self, request, *args, **kwargs):
         dados = request.data.copy()
-        icotacao=[]
         #adiciona usuário
         usuario = Usuario.objects.get(email=request.user)
         dados.__setitem__('operador',usuario.id)
@@ -97,10 +93,9 @@ class CotacaoViewSet(viewsets.ModelViewSet):
         dados.__setitem__('empresa', Empresa.objects.get(razao_social=usuario.empresa).id)
         valor_cotacao=0
         for item in request.data['itens_cotacoes']:
-            valor_cotacao=((float(item['valor_unit']) * float(item['quantidade']))
-                           + valor_cotacao)
+            valor_cotacao=(float(item['valor_unit']) * float(item['quantidade'])) + valor_cotacao
 
-        dados.__setitem__('valor_cotacao',valor_cotacao)
+        dados.__setitem__('valor_cotacao',valor_cotacao )
         serializer = self.get_serializer(data=dados)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -124,56 +119,23 @@ class FechamentoCotacaoViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        empresa = Empresa.objects.get(razao_social=instance.empresa)
-        configuracao=Configuracao.objects.get(empresa=empresa.id)
-        if len(request.data['fechado']) == 4:
-            if str(instance.fechado) == request.data['fechado']:
-                raise APIException('Status já realizado')
+
+        if str(instance.fechado) != request.data['fechado']:
             contacoes = Cotacao.objects.filter(pedido_compra=instance.pedido_compra)
-            if len(contacoes) != configuracao.quantidade_cotacao:
-                print(len(contacoes))
-                raise APIException(f'Pedido não tem {configuracao.quantidade_cotacao} cotações')
-            serializer = self.get_serializer(instance, data=request.data, partial=partial)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
-            itens = ItemCotacao.objects.filter(cotacao=instance.id)
-            # implementar o celery
-            valores = 0
-            contador = 0
-            for item in itens:
-                produto= Produto.objects.get(codigo=item.codigo)
-                produto.ultimo_preco = item.valor_unit
-                itens_gerais = ItemCotacao.objects.filter(
-                    empresa = empresa.id,
-                    codigo=item.codigo
-                )
-                for item_geral in itens_gerais:
-                    cotacao = Cotacao.objects.get(id=item_geral.cotacao.id)
-
-                    if cotacao.fechado:
-                        valores = float(item_geral.valor_unit) + valores
-                        contador = contador + 1
-
-                produto.preco_medio = valores / contador
-                produto.save()
-            # implementar o celery
-
-            if configuracao.aviso_recebimento:
-                notify.send(request.user,
-                            recipient = configuracao.responsavel_almoxarifado,
-                            verb=f'Pedido nº{PedidoCompra.objects.get(id=instance.pedido_compra.id).id}'
-                                 f' foi fechado'
-                                 f' com previzao de entrega de'
-                                 f' {instance.prazo_entrega} dias')
-
+            if len(contacoes) == 3:
+                serializer = self.get_serializer(instance, data=request.data, partial=partial)
+                serializer.is_valid(raise_exception=True)
+                self.perform_update(serializer)
+            else:
+                raise APIException('Pedido com menos de 3 cotações')
         else:
-            serializer = self.get_serializer(instance, data=request.data, partial=partial)
-            serializer.is_valid(raise_exception=True)
-            self.perform_update(serializer)
+            raise APIException('Status já realizado')
+
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
+
         return Response(serializer.data)
 
 
