@@ -1,6 +1,6 @@
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import ValidationError
 from Pedido.models import (PedidoCompra, ItemPedidoCompra, ItemSolicitacao,
-                           ItemAvulso, ItemAvulsoPedido)
+                           ItemAvulso, ItemAvulsoPedido, Cotacao)
 from Produto.models import Produto
 from notifications.signals import notify
 from django.core.mail import send_mail
@@ -85,12 +85,14 @@ def verifica_ultima_aprovacao(aprovacao_config,aprovado,solicitacao,
         if aprovado == True:
             nivel = aprovacao_config.get(pessoa=usuario).nivel
             pessoa = aprovacao_config.get(nivel=nivel + 1).pessoa
+            # TODO:implementar tarefas em segundo plano
             notify.send(usuario,recipient= pessoa, verb=f'SC nº:{solicitacao.id} está '
                                               f'aguardando aprovação',)
             send_mail('Solicitção de Aprovacao de Pedido',f'SC nº:{solicitacao.id} está '
                                               f'aguardando aprovação','2dprojetos@2dprojetos.com',
                       [pessoa])
         else:
+           #TODO:implementar tarefas em segundo plano
            notify.send(usuario,recipient=solicitacao.solicitante,
                        verb=f'SC nº{solicitacao.id} não autorizada por {usuario},'
                               f' conforme jsutificativa {justificativa}')
@@ -131,3 +133,21 @@ def valor_estimado(itens_solicitacoes,itens_avulso):
                        + valor_total)
 
     return valor_total
+
+def verifica_quantidade_cotacao(self,instance,request,partial):
+    #TODO:implementar tarefas em segundo plano
+    contacoes = Cotacao.objects.filter(pedido_compra=instance.pedido_compra)
+    if len(contacoes) == 3:
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return serializer
+    else:
+        raise ValidationError('Pedido com menos de 3 cotações')
+
+def verifica_status_igual(instance,request,self,partial):
+    if str(instance.fechado) != request.data['fechado']:
+        serializer = verifica_quantidade_cotacao(self,instance,request,partial)
+        return serializer
+    else:
+        raise ValidationError('Status já realizado')

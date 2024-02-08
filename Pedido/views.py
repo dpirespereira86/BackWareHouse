@@ -5,16 +5,14 @@ from configuracao.models import Aprovacao_Config
 from Usuario.models import Usuario
 from configuracao.models import Configuracao
 from empresa.models import Empresa
-from .models import (Solicitacao,PedidoCompra,ItemSolicitacao,ItemPedidoCompra,Cotacao,ItemCotacao,AprovacaoSolicitacao,
-                     ItemAvulsoPedido,ItemAvulso)
-from .rules import permissao_aprovar, verifica_ultima_aprovacao, filtra_solicitacao_sem_aprovacao_por_nivel, \
-    valor_estimado
+from .models import (Solicitacao, ItemCotacao, AprovacaoSolicitacao)
+from .rules import *
 from .serializers import (SolictacaoSerializers, PedidoCompraSerializers,
                           ItemPedidoCompraSerializers, ItemSolicitacaoSerializers,
                           CotacaoSerializers,AprovacaoSerializers,
                           SolicitacaoSemAprovacaoSerializers, CotacaoOrcamentoSerializers,
                           FechamentoCotacaoSerializers)
-from rest_framework.exceptions import APIException
+
 
 
 # Create your views here.
@@ -119,25 +117,12 @@ class FechamentoCotacaoViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
-
-        if str(instance.fechado) != request.data['fechado']:
-            contacoes = Cotacao.objects.filter(pedido_compra=instance.pedido_compra)
-            if len(contacoes) == 3:
-                serializer = self.get_serializer(instance, data=request.data, partial=partial)
-                serializer.is_valid(raise_exception=True)
-                self.perform_update(serializer)
-            else:
-                raise APIException('Pedido com menos de 3 cotações')
-        else:
-            raise APIException('Status já realizado')
-
+        serializer = verifica_status_igual(instance,request,self,partial)
         if getattr(instance, '_prefetched_objects_cache', None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
-
         return Response(serializer.data)
-
 
 class ItemCotacaoViewSet(viewsets.ModelViewSet):
     queryset = ItemCotacao.objects.all()

@@ -3,6 +3,7 @@ from rest_framework import permissions
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
 
+from Pedido.models import ItemPedidoCompra,ItemAvulsoPedido
 from empresa.models import Empresa
 from .models import Unidade, Posicao, MOVIMENTACAO, Item, Estoque, Conferencia, Transitorio
 from .serializers import (
@@ -311,22 +312,41 @@ class ConferenciaViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         usuario = Usuario.objects.get(email=request.user)
         empresa = Empresa.objects.get(razao_social=usuario.empresa)
-
+        #TODO:Verificar se os valores e quantidades estão de acordo com o pedido
         produtos_conferidos = []
-        for item in request.data['itens']:
-              if Produto.objects.filter(codigo=item.codigo):
-                  produtos_conferidos = Produto.objects.filter(codigo=item.codigo)
+        valor=[]
+        for item in request.data['itens_conferencia']:
+              if Produto.objects.filter(codigo=item['codigo']):
+                  produto=Produto.objects.filter(codigo=item['codigo'])
+                  produtos_conferidos.append(produto)
+
+
               else:
-                  embalagem = Embalagem.objects.filter(codigo=item.codigo)
-                  while embalagem.quantidade_produto:
-                    produtos_conferidos = Produto.objects.filter(codigo=item.codigo)
-        print(produtos_conferidos)
+                  embalagem = Embalagem.objects.get(codigo=item['codigo'])
+                  for i in range(int(embalagem.quantidade_produto)):
+                     produto = Produto.objects.filter(codigo=embalagem.produto.codigo)
+                     produtos_conferidos.append(produto)
+                     codigo = embalagem.produto.codigo
+                     quantidade = embalagem.quantidade_produto
+
+        itens_pedido = ItemPedidoCompra.objects.filter(id=int(request.data['pedido']))
+        itens_pedido_avulso = ItemAvulsoPedido.objects.filter(id=int(request.data['pedido']))
+        print(valor)
+        print(codigo)
+
+
+        for item in itens_pedido:
+             print(valor.codigo)
+
+
+        print('Itens pedido:',itens_pedido)
+        print('Itens pedido_avulso:', itens_pedido_avulso)
+
         serializer = self.get_serializer(data=[])
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 class TransitorioViewSet(viewsets.ModelViewSet):
     queryset = Transitorio.objects.all()
