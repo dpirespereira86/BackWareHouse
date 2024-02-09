@@ -312,37 +312,58 @@ class ConferenciaViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         usuario = Usuario.objects.get(email=request.user)
         empresa = Empresa.objects.get(razao_social=usuario.empresa)
-        #TODO:Verificar se os valores e quantidades estão de acordo com o pedido
+        dados =  request.data.copy()
+        dados.__setitem__('empresa',empresa.id)
         produtos_conferidos = []
-        valor=[]
+
+        #desmembra os itens conferidos
         for item in request.data['itens_conferencia']:
-              if Produto.objects.filter(codigo=item['codigo']):
-                  produto=Produto.objects.filter(codigo=item['codigo'])
+              if Produto.objects.filter(codigo=item['codigo'],empresa=empresa.id) :
+                  print('eu')
+                  produto=Produto.objects.get(codigo=item['codigo'],empresa=empresa.id)
                   produtos_conferidos.append(produto)
+                  quantidade = item['quantidade']
+                  codigo = produto.codigo
+                  dados['itens_conferencia'].__setitem__('codigo',produto.id)
 
-
-              else:
+              elif Embalagem.objects.filter(codigo=item['codigo']):
                   embalagem = Embalagem.objects.get(codigo=item['codigo'])
+
                   for i in range(int(embalagem.quantidade_produto)):
-                     produto = Produto.objects.filter(codigo=embalagem.produto.codigo)
+                     produto = Produto.objects.get(codigo=embalagem.produto.codigo,empresa=empresa.id)
                      produtos_conferidos.append(produto)
                      codigo = embalagem.produto.codigo
-                     quantidade = embalagem.quantidade_produto
+                     quantidade = embalagem.quantidade_produto * item['quantidade']
+                     dados['itens_conferencia'].__setitem__('codigo', produto.id)
+              else:
+                  print('aqui')
+                  return Response(f'Produto não encontrado'
+                           , status=status.HTTP_428_PRECONDITION_REQUIRED, )
+        print(dados)
+        # Obtem as quantidades solictadas para cada código no pedido
+        if ItemPedidoCompra.objects.filter(id=int(request.data['pedido']), codigo=produto.id):
+            itens_pedido = ItemPedidoCompra.objects.filter(id=int(request.data['pedido']), codigo=produto.id)
+            itens_pedido_avulso = ItemAvulsoPedido.objects.filter(id=int(request.data['pedido']))
+        else:
+            return Response(f'Produto {codigo} não existe neste pedido'
+                            , status=status.HTTP_428_PRECONDITION_REQUIRED, )
 
-        itens_pedido = ItemPedidoCompra.objects.filter(id=int(request.data['pedido']))
-        itens_pedido_avulso = ItemAvulsoPedido.objects.filter(id=int(request.data['pedido']))
-        print(valor)
-        print(codigo)
-
-
+        # Obtem as quantidades solictadas para cada código no pedido
+        quantidade_pedido=0
         for item in itens_pedido:
-             print(valor.codigo)
+            quantidade_pedido = quantidade_pedido + item.quantidade
+
+        # Conferem se as quantidades conferidas são iguais pedido x conferido
+        if quantidade_pedido != quantidade:
+            serializer = self.get_serializer(data=dados)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(f'Existe divergencia entre a quantidade de Pedido {quantidade_pedido} e a '
+                            f'entrada {quantidade}',status=status.HTTP_428_PRECONDITION_REQUIRED,)
 
 
-        print('Itens pedido:',itens_pedido)
-        print('Itens pedido_avulso:', itens_pedido_avulso)
-
-        serializer = self.get_serializer(data=[])
+        serializer = self.get_serializer(data=dados)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)

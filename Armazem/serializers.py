@@ -55,26 +55,24 @@ class AprovacaoMovimentacaoItemSerializers(serializers.ModelSerializer):
 class ItemConferenciaSerializers(serializers.ModelSerializer):
     class Meta:
         model = ItensConferencia
-        fields=('id',
-                'codigo',
-                'codigo_interno',
-                'descricao',
-                'quantidade',
-                'movimentacao',
+        fields=(
+    'conferencia',
+    'id',
+    'codigo',
+    'quantidade',
                 )
 class ConferenciaSerializers(serializers.ModelSerializer):
     itens_conferencia = ItemConferenciaSerializers(many=True)
     class Meta:
         model = Conferencia
         fields=( 'id',
-        'tipo_conferencia',
-        'operador',
-        'posicao',
-        'empresa',
-        'aprovado',
-        'nf',
-        'fluxo',
-        'itens_conferencia',
+                 'tipo_conferencia',
+                  'operador',
+                  'empresa',
+                  'pedido',
+                  'nf',
+                  'fluxo',
+                  'itens_conferencia',
     )
 
     def create(self, validated_data):

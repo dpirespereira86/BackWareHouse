@@ -185,7 +185,6 @@ class Conferencia(Base):
     nf= models.IntegerField()
     fluxo = models.CharField(max_length=100, choices=FLUXO_CHOICE, null=False, blank=False),
 
-
     def __str__(self):
         return f'{self.tipo_conferencia}'
 
@@ -196,9 +195,10 @@ class Conferencia(Base):
         unique_together = ['id', 'empresa']
 
 class ItensConferencia(Base):
-    conferencia = models.ForeignKey(Conferencia,related_name='itens_conferencias',on_delete=models.CASCADE)
+    conferencia = models.ForeignKey(Conferencia,related_name='itens_conferencias',on_delete=models.CASCADE,
+                                    null=True,blank=True)
     id = models.AutoField(primary_key=True,unique=True)
-    codigo=models.ForeignKey(Produto,related_name='itens_conferencias',on_delete=models.CASCADE)
+    codigo=models.ForeignKey(Produto,related_name='itens_conferencias',on_delete=models.CASCADE,blank=True,null=True)
     quantidade = models.DecimalField(max_digits=5,decimal_places=2)
 
 
