@@ -140,6 +140,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'arquivos')
 REST_FRAMEWORK = {
     'DEFAULT_AUTENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+
     ),
     'DEFAULT-PERMISSION_CLASS':(
         'rest_framework.permissions.IsAutenticatedOrReadOnly',

@@ -113,7 +113,7 @@ class FechamentoCotacaoViewSet(viewsets.ModelViewSet):
     serializer_class = FechamentoCotacaoSerializers
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [SessionAuthentication,TokenAuthentication]
-
+    #TODO: Implementar descarte de Item avulso no pedido , terá que ser transformado em produto cadastrado
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()

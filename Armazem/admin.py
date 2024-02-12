@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register models .
-from Armazem.models import Unidade, Posicao, MOVIMENTACAO, Item, Estoque, Conferencia
+from Armazem.models import Unidade, Posicao, MOVIMENTACAO, Item, Estoque, Conferencia, Transitorio
 
 
 @admin.register(Unidade)
@@ -25,7 +25,7 @@ class EstoqueAdmin(admin.ModelAdmin):
     list_display = ('posicao','produto','quantidade',)
 
 @admin.register(Conferencia)
-class EstoqueAdmin(admin.ModelAdmin):
+class ConferenciaAdmin(admin.ModelAdmin):
     list_display = (
     'id',
     'tipo_conferencia',
@@ -35,5 +35,18 @@ class EstoqueAdmin(admin.ModelAdmin):
     'nf',
     'fluxo',
     )
-
+@admin.register(Transitorio)
+class TransitorioAdmin(admin.ModelAdmin):
+    list_display = (
+    'id',
+    'codigo',
+    'codigo_interno',
+    'descricao',
+    'quantidade',
+    'conferencia',
+    'empresa',
+    'aprovado_conferencia',
+    'criacao',
+    'atualizacao'
+    )
 

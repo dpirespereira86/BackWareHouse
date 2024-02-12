@@ -17,7 +17,8 @@ class ConfigSerializers(serializers.ModelSerializer):
 
     'empresa',
     'geracao_pedido_auto',
-    'aprovacoes_config'
+    'aprovacoes_config',
+    'email_forncedor_automatico'
     )
 
     def create(self, validated_data):

@@ -83,17 +83,23 @@ class ObtainAuthToken(APIView):
         return self.serializer_class(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        print('1')
         usuario = Usuario.objects.get(username=request.data['username'])
         empresa = usuario.empresa
         empresa = Empresa.objects.get(razao_social=empresa)
+        print('2')
         """     
          Verifica de a empresa está ativa e habilitada para wms
          
         """
         if empresa.wms == True and empresa.ativo == True :
+            print('3')
             serializer = self.get_serializer(data=request.data)
+            print('4')
             serializer.is_valid(raise_exception=True)
+            print('5') #TODO: Verificar o error para logar no sitema por authtoken
             user = serializer.validated_data['user']
+            print('6')
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
         else:

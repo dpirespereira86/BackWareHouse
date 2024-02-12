@@ -172,10 +172,8 @@ class Doca(Base):
 
 class Conferencia(Base):
 
-    TIPO_CONFERENCIA_CHOICE = (('1','palete fechado'), ('2','fechado misto'),
-                               ('3','Volume'), ('4','Fração'))
-
-    FLUXO_CHOICE = (('1','Entrada'), ('2','Saida'),)
+    TIPO_CONFERENCIA_CHOICE = (('1','palete fechado'), ('2','fechado misto'),('3','Volume'), ('4','Fração'))
+    FLUXO_CHOICE = (('1','Entrada'), ('2','Saida'))
 
     id = models.AutoField(primary_key=True, unique=True)
     tipo_conferencia = models.CharField(max_length=100, choices=TIPO_CONFERENCIA_CHOICE, null=False, blank=False)
@@ -183,10 +181,10 @@ class Conferencia(Base):
     empresa = models.ForeignKey(Empresa,related_name='conferencias',on_delete=models.CASCADE)
     pedido = models.ForeignKey(PedidoCompra,related_name='conferencias',on_delete=models.CASCADE)
     nf= models.IntegerField()
-    fluxo = models.CharField(max_length=100, choices=FLUXO_CHOICE, null=False, blank=False),
+    fluxo = models.CharField(max_length=100, choices=FLUXO_CHOICE, null=False, blank=False)
 
     def __str__(self):
-        return f'{self.tipo_conferencia}'
+        return f'{self.id}-{self.tipo_conferencia}'
 
     class Meta:
         verbose_name = "Conferencia"
@@ -203,7 +201,7 @@ class ItensConferencia(Base):
 
 
     def __str__(self):
-        return f'{self.codigo}'
+        return f'{self.conferencia}'
 
     class Meta:
         verbose_name = "Item_conferencia"
@@ -228,6 +226,10 @@ class AprovacaoConferencia(Base):
 
 class Transitorio(Base):
 
+    STATUS_CHOICES =(('1','Aguardando Aprovação'),('2','Conferencia Aprovada'),('3','Conferencia Rejeitada'),
+                     ('4','Etiquetando'),('5','Armazenado'),('6','Transferido'),('7','Picking Realizado'),
+                     ('8','Aguardando Conferencia saida'),('9','Baixado'))
+
     id = models.AutoField(primary_key=True, unique=True)
     codigo = models.ForeignKey(Produto, related_name='itens_transitorios', on_delete=models.CASCADE)
     codigo_interno = models.CharField(max_length=30)
@@ -236,13 +238,18 @@ class Transitorio(Base):
     conferencia = models.ForeignKey(Conferencia, related_name='itens_transitorios', on_delete=models.CASCADE, blank=True,
                                      null=True)
     empresa = models.ForeignKey(Empresa, related_name='itens_transitorios', on_delete=models.CASCADE)
-    status = models.CharField(max_length=30)
+    aprovado_conferencia = models.BooleanField(default=False)
+    usuario_conferencia= models.ForeignKey(Usuario, related_name='itens_transitorios_conferencia', on_delete=models.CASCADE)
+    aprovado_posicao=models.BooleanField(default=False)
+    usuario_armazenamento = models.ForeignKey(Usuario, related_name='itens_transitorios_armazenamento', on_delete=models.CASCADE)
+    status=models.CharField(max_length=100,choices=STATUS_CHOICES,null=False,blank=False)
+    movimentacoes = models.ForeignKey(MOVIMENTACAO,related_name='itens_transitorios',on_delete=models.CASCADE,blank=True,null=True)
 
     def __str__(self):
-        return f'{self.tipo_conferencia}'
+        return f'{self.conferencia}-{self.codigo_interno}'
 
     class Meta:
         verbose_name = "Transitorio"
         verbose_name_plural= "Transitórios"
         db_table = "Transitorio"
-        unique_together = ['id', 'empresa']
+        unique_together = ['id', 'empresa','codigo_interno']

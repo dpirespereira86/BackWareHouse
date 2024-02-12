@@ -62,7 +62,7 @@ class ItemConferenciaSerializers(serializers.ModelSerializer):
     'quantidade',
                 )
 class ConferenciaSerializers(serializers.ModelSerializer):
-    itens_conferencia = ItemConferenciaSerializers(many=True)
+    itens_conferencias = ItemConferenciaSerializers(many=True)
     class Meta:
         model = Conferencia
         fields=( 'id',
@@ -72,14 +72,15 @@ class ConferenciaSerializers(serializers.ModelSerializer):
                   'pedido',
                   'nf',
                   'fluxo',
-                  'itens_conferencia',
+                  'itens_conferencias',
     )
 
     def create(self, validated_data):
-        itens_data = validated_data.pop('itens')
+        itens_conferencias = validated_data.pop('itens_conferencias')
         conferencia= Conferencia.objects.create(**validated_data)
-        for itens_data in itens_data:
-            ItensConferencia.objects.create(conferencia=conferencia, **itens_data)
+        for itens_conferencias in itens_conferencias:
+            ItensConferencia.objects.create(conferencia=conferencia, **itens_conferencias)
+        print(conferencia)
         return conferencia
 
 class TransitorioSerializers(serializers.ModelSerializer):
